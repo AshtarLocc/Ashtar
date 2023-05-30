@@ -1,0 +1,151 @@
+﻿
+@section Styles{
+    <link href="~/css/ad/ad_update.css" rel="stylesheet" />
+}
+
+
+<div class="container-fluid">
+    <!-- 卡片 -->
+    <div class="CaseArea">
+        @foreach (var item in Model.CaseTablesList)
+        {
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">方案:</h5>
+                    <p class="card-text">@item.Case_Name</p>
+                    <p class="card-text">以日記費 @item.Case_PricePerDay/日</p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a class="btn btn-outline-light" href="@Url.Action("GetCase", "ADUpdate_Home", new { id = item.Case_ID })">修改</a>
+                        <a class="btn btn-outline-light" href="@Url.Action("DeleteCase", "ADUpdate_Home", new { id = item.Case_ID })">刪除</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="AD_UP">
+
+        <div class="form_C">
+            <!-- 修改方案 -->
+            <div class="form_UpdateCase">
+                <h5 class="card-title">修改方案</h5>
+                <form method="post" asp-controller="ADUpdate_Home" asp-action="UpdateCase">
+                    @Html.AntiForgeryToken()
+                    <div class="form-floating mb-3">
+                        <input type="hidden" name="id" value="@Model.SelectedCase?.Case_ID" />
+                        <input type="text" class="form-control" id="caseName" placeholder="name" name="caseName" required value="@Model.SelectedCase?.Case_Name" required>
+                        <label for="caseName">方案名稱</label>
+                    </div>
+
+                    <div class="form-floating mb-3">
+                        <input type="number" step="1" class="form-control" id="casePrice" placeholder="Price" required name="casePrice" value="@Model.SelectedCase?.Case_PricePerDay" required>
+                        <label for="casePrice">單日價格</label>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-outline-light">確認修改</button>
+                    </div>
+                </form>
+            </div>
+            
+
+            <div class="form_CreateCase">
+                <h5 class="card-title">新增方案</h5>
+                <form method="post" asp-controller="ADUpdate_Home" asp-action="AddCase" >
+                    @Html.AntiForgeryToken()
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="caseName" placeholder="name" name="caseName" required>
+                        <label for="floatingInput">方案名稱</label>
+                    </div>
+                    <!-- 新增方案 -->
+                    <!--<div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="floatingInput"
+                            placeholder="Description">
+                        <label for="floatingPassword">描述</label>
+                    </div>-->
+                    <div class="form-floating mb-3">
+                        <input type="number" step="1" class="form-control" id="casePrice" placeholder="Price" name="casePrice" required>
+                        <label for="floatingPassword">單日價格</label>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex">
+                        <button type="submit" class="btn btn-outline-light">上架</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- 上架廣告表單 -->
+        <form class="form_AD row gx-2" method="post" id="form_AD" asp-controller="ADUpdate_Home" asp-action="AddAD" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <h4>廣告上架</h4>
+            <div class="col-md-3 mx-3">
+                <label for="inputState" class="form-label">廠商名稱</label>
+                <select id="inputStateBrand" class="form-select" name="P_Name">
+                    <option selected>選擇廠商...</option>
+                    @foreach (var item in Model.PartnersList)
+                    {
+                        <option>@item.P_Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-md-3 mx-3">
+                <label for="inputState" class="form-label">方案</label>
+                <select id="inputStateCase" class="form-select" name="Case_Name">
+                    <option selected>選擇方案...</option>
+                    @foreach (var item in Model.CaseTablesList)
+                    {
+                        <option>@item.Case_Name</option>
+                    }
+                </select>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-3 StartDate mx-3">
+                <label for="start">開始日期</label>
+                <input type="date" id="startDate" name="Ad_StartTime" max="2053-12-31">
+                <span id="endDateError" class="text-danger" style="display: none;">開始日期不能早於今日。</span>
+            </div>
+            <div class="col-md-3 EndDate mx-3">
+                <label for="start">結束日期</label>
+
+                <input type="date" id="endDate" name="Ad_EndTime"max="2053-12-31">
+                <span id="dateError" class="text-danger" style="display: none;">結束日期不能早於開始日期。</span>
+            </div>
+
+            <div class="col-md-1 mx-3">
+                <label for="inputday" class="form-label">天數</label>
+                <input type="text" class="form-control " id="inputday" disabled>
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-3 mx-3">
+                <label for="formFile" class="form-label">圖片上傳</label>
+                <input type="file" name="ADImg" class="form-control" id="ADImg" accept="image/*" action="UploadFile">
+            </div>
+
+            <div class="col-md-9 mx-3">
+                <label for="TargetURL" class="form-label" required>TargetURL</label>
+                <input type="text" class="form-control" id="TargetURL" name="Ad_TargetURL">
+            </div>
+            <div class="clearfix"></div>
+            <div class="col-md-6 mx-3">
+                <label for="describe" class="form-label">描述</label>
+                <input type="text" class="form-control" id="describe" name="Ad_Description">
+            </div>
+            <div class="clearfix"></div>
+
+            <div class="col-md-3 PayDay mx-3">
+                <label for="Pay">應付款日</label>
+                <input type="date" id="Pay" name="Ad_PaymentDueDate"
+                    max="2053-12-31">
+
+            </div>
+            <div class="col-md-6 UpBtn">
+                <button type="submit" class="btn btn-outline-light">上架</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 11"></div>
+@section Script{
+  <script src="~/js/ad/updateadscript.js"></script>
+}

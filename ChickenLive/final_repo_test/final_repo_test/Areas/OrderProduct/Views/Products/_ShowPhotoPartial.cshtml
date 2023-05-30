@@ -1,0 +1,15 @@
+﻿@model ClassLibrary.Models.Product;
+
+@if (Model.P_Image != null)
+{
+    <img class="img-fluid" src="@Url.Content(Model.P_Image)"
+         title="@Html.DisplayFor(model=>model.P_Name)" />
+    @*<img class="img-fluid" src="@Url.Content($"~/img/producttest/{Model.P_Image}")"
+         title="@Html.DisplayFor(model=>model.P_Name)" />*@
+}
+else
+{
+    <img class="img-fluid" src="@Url.Content("https://res.cloudinary.com/dolqf5dmn/image/upload/v1684857337/No_Image_Available_upbegy.jpg")"
+         title="尚無圖片" />
+
+}
